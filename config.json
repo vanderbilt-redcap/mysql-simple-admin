@@ -1,0 +1,19 @@
+{
+	"name": "MySQL Simple Admin",
+
+	"namespace": "Vanderbilt\\SimpleMysqlAdmin",
+
+	"description": "A simple web-based MySQL client that is read-only and REDCap-centric. Adds a new link in the Control Center under 'Technical/Developer Tools'.",
+
+	"authors": [
+		{
+			"name": "Rob Taylor",
+			"email": "rob.taylor@vumc.org",
+			"institution": "Vanderbilt University Medical Center"
+		}
+	],
+
+	"permissions": [
+		"redcap_control_center"
+	]
+}

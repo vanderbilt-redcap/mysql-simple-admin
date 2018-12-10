@@ -27,6 +27,9 @@ function getOpenRequests($mysql_ids=null)
 include APP_PATH_DOCROOT . 'ControlCenter/header.php';
 require_once dirname(__FILE__) . DS . 'PHPSQLParser.php';
 
+$customQueries = array_combine($module->getSystemSetting('title'), $module->getSystemSetting('query'));
+$customQueries = array_filter($customQueries,function ($val, $key) {return !empty($val) && !empty($key);}, ARRAY_FILTER_USE_BOTH);
+
 $simpleAdmin = new Vanderbilt\SimpleMysqlAdmin\SimpleMysqlAdmin();
 $baseUrl = $simpleAdmin->getPageUrl('index.php');
 
@@ -285,6 +288,15 @@ if ($query != "")
 		<td valign="top" id="west2" style="width:210px;">
 			<!-- TABLE MENU -->
 			<div style="width:200px;">
+				<?php if (sizeof($customQueries)){ ?>
+				<div style="font-weight:bold;padding:0 3px 5px 0;">Custom Queries:</div>
+					<?php foreach ($customQueries as $ctitle => $cquery) { ?>
+					<div style="padding-left:5px;line-height:12px;">
+						<a href="javascript:;" style="text-decoration:underline;font-size:10px;font-family:tahoma;" onclick="$('#query').val($(this).attr('cquery')); $('#submit').click();" cquery="<?php echo htmlspecialchars($cquery, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $ctitle ?></a>
+					</div>
+					<?php } ?>
+				<hr>
+				<?php } ?>
 				<div style="font-weight:bold;padding:0 3px 5px 0;">REDCap database tables:</div>
 				<?php foreach ($table_list as $this_table) { ?>
 				<div style="padding-left:5px;line-height:12px;">

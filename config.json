@@ -15,5 +15,29 @@
 
 	"permissions": [
 		"redcap_control_center"
-	]
+	],
+
+	"system-settings": [
+      		{
+         		"key": "custom-query",
+         		"name": "Custom SQL Queries",
+         		"required": false,
+         		"type": "sub_settings",
+         		"repeatable":true,
+         		"sub_settings":[
+            			{
+               				"key": "title",
+           				"name": "Title",
+               				"required": true,
+               				"type": "text"
+            			},
+            			{
+               				"key": "query",
+               				"name": "Query",
+               				"required": true,
+               				"type": "textarea"
+            			}
+         		]
+      		}
+   	]
 }

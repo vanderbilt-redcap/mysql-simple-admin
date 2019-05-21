@@ -59,7 +59,7 @@ function showMore() {
 </script>
 
 <div style="padding-left:10px;">
-<h4 style="color:#800000;margin:0 0 10px;"><img src="<?php echo APP_PATH_IMAGES ?>database_table.png"> MySQL Simple Admin</h4>
+<h4 style="color:#800000;margin:0 0 10px;"><i class="fas fa-th"></i> MySQL Simple Admin</h4>
 <p style="margin:20px 0;">
 	This module allows REDCap administrators to make read-only SQL queries to tables in the REDCap back-end database. You may enter an SQL query into the text box below to execute it. 
 	NOTE: Since only read-only queries are supported, this module is not able to modify database tables in any way.

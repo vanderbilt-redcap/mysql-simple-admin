@@ -20,14 +20,14 @@
 	"system-settings": [
       		{
          		"key": "custom-query",
-         		"name": "Custom SQL Queries",
+         		"name": "Saved Queries",
          		"required": false,
          		"type": "sub_settings",
          		"repeatable":true,
          		"sub_settings":[
             			{
                				"key": "title",
-           				"name": "Title",
+							"name": "Title",
                				"required": true,
                				"type": "text"
             			},

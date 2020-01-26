@@ -27,8 +27,14 @@ function getOpenRequests($mysql_ids=null)
 include APP_PATH_DOCROOT . 'ControlCenter/header.php';
 require_once dirname(__FILE__) . DS . 'PHPSQLParser.php';
 
-$customQueries = array_combine($module->getSystemSetting('title'), $module->getSystemSetting('query'));
-$customQueries = array_filter($customQueries,function ($val, $key) {return !empty($val) && !empty($key);}, ARRAY_FILTER_USE_BOTH);
+// Get saved queries
+$customQueries = array();
+$queryStmts = $module->getSystemSetting('query');
+$i = 1;
+foreach ($module->getSystemSetting('title') as $key=>$val) {
+	if (empty($val) || !isset($queryStmts[$key])) continue;
+	$customQueries[$i++] = array('title'=>$val, 'query'=>$queryStmts[$key]);
+}
 
 $simpleAdmin = new Vanderbilt\SimpleMysqlAdmin\SimpleMysqlAdmin();
 $baseUrl = $simpleAdmin->getPageUrl('index.php');
@@ -44,6 +50,7 @@ td.query_cell { padding:3px;border-top:1px solid #CCCCCC;font-size:10px;vertical
 td.query_cell a { text-decoration:underline;font-size:8pt;font-family:verdana,arial; }
 #west2 {
   border-right:1px solid #aaa;
+  width:250px;
 }
 #center2 {
   padding:0 20px;
@@ -52,17 +59,24 @@ td.query_cell a { text-decoration:underline;font-size:8pt;font-family:verdana,ar
 .rcp a { text-decoration:underline !important;font-size:8pt !important; }
 </style>
 <script type="text/javascript">
+var baseUrl = '<?=js_escape($baseUrl)?>';
 function showMore() {
 	$('.rcp').hide();
 	$('.rcf').show();
 }
+function loadCustomQuery(querynum) {
+	showProgress(1,1);
+	window.location.href = baseUrl+'&q='+querynum;
+}
 </script>
 
 <div style="padding-left:10px;">
-<h4 style="color:#800000;margin:0 0 10px;"><i class="fas fa-th"></i> MySQL Simple Admin</h4>
-<p style="margin:20px 0;">
-	This module allows REDCap administrators to make read-only SQL queries to tables in the REDCap back-end database. You may enter an SQL query into the text box below to execute it. 
-	NOTE: Since only read-only queries are supported, this module is not able to modify database tables in any way.
+<h4 style="color:#A00000;margin:0 0 10px;"><i class="fas fa-th"></i> MySQL Simple Admin</h4>
+<p style="margin:20px 0;max-width:900px;">
+	This module allows REDCap administrators to query REDCap's MySQL database. You may enter an SQL query into the text box below to execute it. 
+	Since only "select" (i.e., read-only) queries are supported, this module is not able to modify database tables in any way.
+	You may also save custom queries, which can be stored in the Configure dialog for this module on the External Modules page in the Control Center.
+	Saving a custom query allows you to easily run the query at any time by simply clicking a link on the module's left-hand menu.
 </p>
 <?php
 
@@ -81,9 +95,12 @@ while ($row = db_fetch_array($q))
 	$table_list[] = $row[0];
 }
 
-
+// If clicked a saved query
+if ($_SERVER['REQUEST_METHOD'] != 'POST' && isset($_GET['q']) && isset($customQueries[$_GET['q']])) {
+	$query = trim(html_entity_decode($customQueries[$_GET['q']]['query'], ENT_QUOTES));
+}
 // If query was submitted, then execute it
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['query']) && isset($_POST['submit']) && !$isAjax)
+elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['query']) && !$isAjax)
 {
 	// Sanitize query
 	$query = trim(html_entity_decode($_POST['query'], ENT_QUOTES));
@@ -204,7 +221,7 @@ if ($query != "")
 		$display_result .= "<table class='dt2' style='font-family:Verdana;font-size:11px;'>
 								<tr class='grp2'>
 									<td colspan='$num_cols'>
-										<div style='width:600px;font-size:12px;font-weight:normal;padding:5px 0 10px;color:#800000;'>
+										<div style='width:600px;font-size:12px;font-weight:normal;padding:5px 0 10px;color:#A00000;'>
 											$query_executed
 										</div>
 									</td>
@@ -280,21 +297,22 @@ if ($query != "")
 
 
 
-
 ?>
 
 <table style="width:100%;">
 	<tr>
-		<td valign="top" id="west2" style="width:210px;">
+		<td valign="top" id="west2">
 			<!-- TABLE MENU -->
-			<div style="width:200px;">
+			<div style="width:95%;">
 				<?php if (sizeof($customQueries)){ ?>
-				<div style="font-weight:bold;padding:0 3px 5px 0;">Custom Queries:</div>
-					<?php foreach ($customQueries as $ctitle => $cquery) { ?>
-					<div style="padding-left:5px;line-height:12px;">
-						<a href="javascript:;" style="text-decoration:underline;font-size:10px;font-family:tahoma;" onclick="$('#query').val($(this).attr('cquery')); $('#submit').click();" cquery="<?php echo htmlspecialchars($cquery, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $ctitle ?></a>
-					</div>
+				<div style="font-weight:bold;padding:0 3px 5px 0;">Saved Queries:</div>
+				<ol style="margin-bottom:0;padding-inline-start:15px;">
+					<?php foreach ($customQueries as $key => $cattr) { ?>
+					<li style="line-height:12px;margin:3px 0;font-size:10px;font-family:tahoma;">
+						<a href="javascript:;" style="text-decoration:underline;font-size:10px;font-family:tahoma;" onclick="loadCustomQuery(<?=$key?>);"><?php echo htmlspecialchars($cattr['title'], ENT_QUOTES, 'UTF-8') ?></a>
+					</li>
 					<?php } ?>
+				</ol>
 				<hr>
 				<?php } ?>
 				<div style="font-weight:bold;padding:0 3px 5px 0;">REDCap database tables:</div>
@@ -307,11 +325,12 @@ if ($query != "")
 		</td>
 		<td valign="top" id="center2">
 			<!-- MAIN WINDOW -->
-			<div style="font-weight:bold;">Query:</div>
-			<form action="<?php echo $baseUrl ?>" onsubmit="setTimeout(function(){$('#submit, #query').prop('disabled',true);},10);" enctype="multipart/form-data" target="_self" method="post" name="form" id="form">
-				<textarea id="query" name="query" style="font-family:arial;width:100%;max-width:600px;font-size:13px;height:120px;"><?php echo $query ?></textarea>
-				<br>
-				<input id="submit" name="submit" type="submit" value=" Execute ">
+			<div style="font-weight:bold;margin-bottom:2px;">SQL Query:</div>
+			<form action="<?php echo $baseUrl ?>" enctype="multipart/form-data" target="_self" method="post" name="form" id="form">
+				<textarea id="query" name="query" style="resize:auto;width:100%;max-width:600px;font-size:13px;height:150px;padding:5px;" placeholder="select * from redcap_config"><?php echo $query ?></textarea>
+				<div class="">
+					<button class="btn btn-sm btn-primaryrc" onclick="showProgress(1,1);$('#form').submit();">Execute</button>
+				</div>
 			</form>
 			<!-- RESULT -->
 			<?php if ($display_result != "") echo "<div style='padding:20px 0;margin-top:30px;border-top:1px solid #aaa;'>$display_result</div>"; ?>		

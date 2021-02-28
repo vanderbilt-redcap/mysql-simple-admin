@@ -870,7 +870,7 @@ EOREGEX
 							++$n;
 						} 
 		
-						continue;
+						//continue;
 					break;
 		
 					case 'INDEX':
@@ -894,7 +894,7 @@ EOREGEX
 					case 'OUTER':
 					#	$expression .= $token;
 						$token_count++;
-						continue;
+						//continue;
 					break;
 		
 						
@@ -902,7 +902,7 @@ EOREGEX
 					case 'FOR':
 						$token_count++;
 						$skip_next = true;
-						continue;
+						//continue;
 					break;
 
 					case 'LEFT':
@@ -961,7 +961,7 @@ EOREGEX
 
 		
 					default:
-						if($token === false || empty($token) || $token === "") continue;
+						if($token === false || empty($token) || $token === "") break; //continue;
 		
 						if($token_count == 0 ) { 
 							if(!$table) {	

@@ -304,8 +304,8 @@ if ($query != "")
 		<td valign="top" id="west2">
 			<!-- TABLE MENU -->
 			<div style="width:95%;">
-				<?php if (sizeof($customQueries)){ ?>
 				<div style="font-weight:bold;padding:0 3px 5px 0;">Saved Queries:</div>
+				<?php if (sizeof($customQueries)){ ?>
 				<ol style="margin-bottom:0;padding-inline-start:15px;">
 					<?php foreach ($customQueries as $key => $cattr) { ?>
 					<li style="line-height:12px;margin:3px 0;font-size:10px;font-family:tahoma;">
@@ -313,8 +313,10 @@ if ($query != "")
 					</li>
 					<?php } ?>
 				</ol>
-				<hr>
+				<?php } else { ?>
+					<a href="<?=APP_URL_EXTMOD?>manager/control_center.php" style="text-decoration:underline;font-size:11px;font-family:tahoma;color:#A00000;line-height:1.3;display:inline-block;">Add saved queries using the<br>EM Configure dialog</a>
 				<?php } ?>
+				<hr>
 				<div style="font-weight:bold;padding:0 3px 5px 0;">REDCap database tables:</div>
 				<?php foreach ($table_list as $this_table) { ?>
 				<div style="padding-left:5px;line-height:12px;">

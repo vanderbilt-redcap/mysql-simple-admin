@@ -192,7 +192,7 @@ if(!defined('HAVE_PHP_SQL_PARSER')) {
 	
 				if(!is_string($sql)) {
 					echo "SQL:\n";
-					print_r($sql);
+					print_r(htmlentities($sql, ENT_QUOTES));
 					exit;
 				}
 	

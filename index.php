@@ -108,7 +108,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['query']) && !$isAj
 // Do select * of selected table
 elseif (isset($_GET['table']) && in_array($_GET['table'], $table_list))
 {
-	$query = "select * from " . $_GET['table'];
+	$query = "select * from " . htmlentities($_GET['table'], ENT_QUOTES);
 	if (isset($_GET['field']) && isset($_GET['value'])) {
 		$_GET['field'] = preg_replace("/[^0-9a-zA-Z_]/", "", $_GET['field']);
 		$query .= " where " . prep($_GET['field']) . " = '" . prep($_GET['value']) . "'";
@@ -230,7 +230,7 @@ if ($query != "")
 								<tr class='grp2'>
 									<td colspan='$num_cols'>
 										<div style='width:600px;font-size:11px;font-weight:normal;padding:5px 5px 8px;color:#C00000;font-family:monospace;'>
-											".RCView::escape($query_executed)."
+											" . htmlentities($query_executed, ENT_QUOTES) . "
 										</div>
 									</td>
 								</tr>
@@ -337,7 +337,7 @@ if ($query != "")
 			<!-- MAIN WINDOW -->
 			<div style="font-weight:bold;margin-bottom:2px;">SQL Query:</div>
 			<form action="<?php echo $baseUrl ?>" enctype="multipart/form-data" target="_self" method="post" name="form" id="form">
-				<textarea id="query" name="query" style="font-family:monospace;resize:auto;width:100%;max-width:800px;font-size:14px;height:200px;padding:5px;" placeholder="select * from redcap_config"><?=htmlspecialchars($query, ENT_QUOTES)?></textarea>
+				<textarea id="query" name="query" style="font-family:monospace;resize:auto;width:100%;max-width:800px;font-size:14px;height:200px;padding:5px;" placeholder="select * from redcap_config"><?php echo htmlentities($query, ENT_QUOTES) ?></textarea>
 				<div class="">
 					<button class="btn btn-sm btn-primaryrc fs15" onclick="showProgress(1,1);$('#form').submit();">Execute</button>
 				</div>

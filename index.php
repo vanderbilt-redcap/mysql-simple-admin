@@ -73,10 +73,10 @@ function loadCustomQuery(querynum) {
 <div style="padding-left:10px;">
 <h4 style="color:#A00000;margin:0 0 10px;"><i class="fas fa-th"></i> MySQL Simple Admin</h4>
 <p style="margin:20px 0;max-width:900px;">
-	This module allows REDCap administrators to query REDCap's MySQL database. You may enter an SQL query into the text box below to execute it. 
-	Since only "select" (i.e., read-only) queries are supported, this module is not able to modify database tables in any way.
-	You may also save custom queries, which can be stored in the Configure dialog for this module on the External Modules page in the Control Center.
-	Saving a custom query allows you to easily run the query at any time by simply clicking a link on the module's left-hand menu.
+    This module allows REDCap administrators to directly query REDCap's MySQL/MariaDB database. You may enter an SQL query into the text box below to execute it.
+    Since only read-only queries are supported (i.e., show, select, explain), this module is not able to modify database tables in any way.
+    You may also save custom queries, which can be stored in the Configure dialog for this module on the External Modules page in the Control Center.
+    Saving a custom query allows you to easily run the query at any time by simply clicking a link on the module's left-hand menu.
 </p>
 <?php
 
@@ -115,6 +115,8 @@ elseif (isset($_GET['table']) && in_array($_GET['table'], $table_list))
 	}
 }
 
+// Trim semi-colon from the end, if needed
+$query = rtrim(trim($query), ";");
 
 if ($query != "")
 {
@@ -335,7 +337,7 @@ if ($query != "")
 			<!-- MAIN WINDOW -->
 			<div style="font-weight:bold;margin-bottom:2px;">SQL Query:</div>
 			<form action="<?php echo $baseUrl ?>" enctype="multipart/form-data" target="_self" method="post" name="form" id="form">
-				<textarea id="query" name="query" style="resize:auto;width:100%;max-width:600px;font-size:13px;height:150px;padding:5px;" placeholder="select * from redcap_config"><?php echo $query ?></textarea>
+				<textarea id="query" name="query" style="resize:auto;width:100%;max-width:600px;font-size:13px;height:150px;padding:5px;" placeholder="select * from redcap_config"><?=htmlspecialchars($query, ENT_QUOTES)?></textarea>
 				<div class="">
 					<button class="btn btn-sm btn-primaryrc" onclick="showProgress(1,1);$('#form').submit();">Execute</button>
 				</div>

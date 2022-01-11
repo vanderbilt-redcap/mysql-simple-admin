@@ -17,4 +17,23 @@ class SimpleMysqlAdmin extends AbstractExternalModule {
 	function getPageUrl($page) {
 		return $this->getUrl($page);
 	}
+
+	function isQueryType($query, $types) {
+		if(!is_array($types)){
+			$types = [$types];
+		}
+
+		foreach($types as $type){
+			if(empty($type)){
+				throw new \Exception('Empty types are not allowed');
+			}
+
+			$type = preg_quote($type);
+			if(preg_match("/^$type\s/i", $query)){
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

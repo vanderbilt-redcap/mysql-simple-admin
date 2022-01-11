@@ -72,11 +72,11 @@ function loadCustomQuery(querynum) {
 
 <div style="padding-left:10px;">
 <h4 style="color:#A00000;margin:0 0 10px;"><i class="fas fa-th"></i> MySQL Simple Admin</h4>
-<p style="margin:20px 0;max-width:900px;">
-	This module allows REDCap administrators to query REDCap's MySQL database. You may enter an SQL query into the text box below to execute it. 
-	Since only "select" (i.e., read-only) queries are supported, this module is not able to modify database tables in any way.
-	You may also save custom queries, which can be stored in the Configure dialog for this module on the External Modules page in the Control Center.
-	Saving a custom query allows you to easily run the query at any time by simply clicking a link on the module's left-hand menu.
+<p style="margin:20px 0;max-width:1000px;">
+    This module allows REDCap administrators to directly query REDCap's MySQL/MariaDB database. You may enter an SQL query into the text box below to execute it.
+    Since only read-only queries are supported (i.e., show, select, explain), this module is not able to modify database tables in any way.
+    You may also save custom queries, which can be stored in the Configure dialog for this module on the External Modules page in the Control Center.
+    Saving a custom query allows you to easily run the query at any time by simply clicking a link on the module's left-hand menu.
 </p>
 <?php
 
@@ -115,6 +115,8 @@ elseif (isset($_GET['table']) && in_array($_GET['table'], $table_list))
 	}
 }
 
+// Trim semi-colon from the end, if needed
+$query = rtrim(trim($query), ";");
 
 if ($query != "")
 {
@@ -314,19 +316,19 @@ if ($query != "")
 				<?php if (sizeof($customQueries)){ ?>
 				<ol style="margin-bottom:0;padding-inline-start:15px;">
 					<?php foreach ($customQueries as $key => $cattr) { ?>
-					<li style="line-height:12px;margin:3px 0;font-size:10px;font-family:tahoma;">
-						<a href="javascript:;" style="text-decoration:underline;font-size:10px;font-family:tahoma;" onclick="loadCustomQuery(<?=$key?>);"><?php echo htmlspecialchars($cattr['title'], ENT_QUOTES, 'UTF-8') ?></a>
+					<li style="line-height:12px;margin:3px 0;font-size:10px;">
+						<a href="javascript:;" style="text-decoration:underline;font-size:10px;" onclick="loadCustomQuery(<?=$key?>);"><?php echo htmlspecialchars($cattr['title'], ENT_QUOTES, 'UTF-8') ?></a>
 					</li>
 					<?php } ?>
 				</ol>
 				<?php } else { ?>
-					<a href="<?=APP_URL_EXTMOD?>manager/control_center.php" style="text-decoration:underline;font-size:11px;font-family:tahoma;color:#A00000;line-height:1.3;display:inline-block;">Add saved queries using the<br>EM Configure dialog</a>
+					<a href="<?=APP_URL_EXTMOD?>manager/control_center.php" style="text-decoration:underline;font-size:11px;color:#C00000;line-height:1.3;display:inline-block;">Add saved queries using the<br>EM Configure dialog</a>
 				<?php } ?>
 				<hr>
 				<div style="font-weight:bold;padding:0 3px 5px 0;">REDCap database tables:</div>
 				<?php foreach ($table_list as $this_table) { ?>
 				<div style="padding-left:5px;line-height:12px;">
-					<a href="javascript:;" style="text-decoration:underline;font-size:10px;font-family:tahoma;" onclick="window.location.href='<?php echo $baseUrl ?>&table=<?php echo $this_table ?>';"><?php echo $this_table ?></a>
+					<a href="javascript:;" style="text-decoration:underline;font-size:10px;" onclick="window.location.href='<?php echo $baseUrl ?>&table=<?php echo $this_table ?>';"><?php echo $this_table ?></a>
 				</div>
 				<?php } ?>
 			</div>
@@ -337,7 +339,7 @@ if ($query != "")
 			<form action="<?php echo $baseUrl ?>" enctype="multipart/form-data" target="_self" method="post" name="form" id="form">
 				<textarea id="query" name="query" style="resize:auto;width:100%;max-width:600px;font-size:13px;height:150px;padding:5px;" placeholder="select * from redcap_config"><?php echo htmlentities($query, ENT_QUOTES) ?></textarea>
 				<div class="">
-					<button class="btn btn-sm btn-primaryrc" onclick="showProgress(1,1);$('#form').submit();">Execute</button>
+					<button class="btn btn-sm btn-primaryrc fs15" onclick="showProgress(1,1);$('#form').submit();">Execute</button>
 				</div>
 			</form>
 			<!-- RESULT -->

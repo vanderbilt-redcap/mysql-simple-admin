@@ -229,7 +229,7 @@ if ($query != "")
 		$display_result .= "<table class='dt2' style='font-family:Verdana;font-size:11px;'>
 								<tr class='grp2'>
 									<td colspan='$num_cols'>
-										<div style='width:600px;font-size:12px;font-weight:normal;padding:5px 0 10px;color:#A00000;'>
+										<div style='width:600px;font-size:11px;font-weight:normal;padding:5px 5px 8px;color:#C00000;font-family:monospace;'>
 											" . htmlentities($query_executed, ENT_QUOTES) . "
 										</div>
 									</td>
@@ -337,7 +337,7 @@ if ($query != "")
 			<!-- MAIN WINDOW -->
 			<div style="font-weight:bold;margin-bottom:2px;">SQL Query:</div>
 			<form action="<?php echo $baseUrl ?>" enctype="multipart/form-data" target="_self" method="post" name="form" id="form">
-				<textarea id="query" name="query" style="resize:auto;width:100%;max-width:600px;font-size:13px;height:150px;padding:5px;" placeholder="select * from redcap_config"><?php echo htmlentities($query, ENT_QUOTES) ?></textarea>
+				<textarea id="query" name="query" style="font-family:monospace;resize:auto;width:100%;max-width:800px;font-size:14px;height:200px;padding:5px;" placeholder="select * from redcap_config"><?php echo htmlentities($query, ENT_QUOTES) ?></textarea>
 				<div class="">
 					<button class="btn btn-sm btn-primaryrc fs15" onclick="showProgress(1,1);$('#form').submit();">Execute</button>
 				</div>

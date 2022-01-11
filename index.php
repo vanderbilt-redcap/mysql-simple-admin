@@ -125,11 +125,17 @@ if ($query != "")
 	$found_rows = 0;
 	$mtime = explode(" ", microtime());
 	$starttime = $mtime[1] + $mtime[0]; 
-	$isSelectQuery = (strtolower(substr($query, 0, 7)) == "select ");
-	if ($isSelectQuery || strtolower(substr($query, 0, 5)) == "show ")
+
+	$allowedQueryTypes = [
+		'select',
+		'show',
+		'explain'
+	];
+
+	if ($module->isQueryType($query, $allowedQueryTypes))
 	{
 		// SELECT
-		if ($isSelectQuery)
+		if ($module->isQueryType($query, 'select'))
 		{
 			// Find total rows that could be returned
 			$q = db_query("select SQL_CALC_FOUND_ROWS " . substr($query_executed, 7));
@@ -184,7 +190,7 @@ if ($query != "")
 				}
 			}
 		}
-		// SHOW
+		// SHOW or EXPLAIN
 		else
 		{
 			$q = db_query($query);
@@ -198,7 +204,7 @@ if ($query != "")
 	} 
 	else 
 	{
-		$query_error = "Can only accept SELECT or SHOW queries!";
+		$query_error = "Can only accept the following query types: " . strtoupper(implode(', ', $allowedQueryTypes));
 	}
     $total_execution_time = round($endtime - $starttime, 4);
 	// Query failed

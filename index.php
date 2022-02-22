@@ -122,7 +122,6 @@ if ($query != "")
 	$query_executed = (strpos(strtolower($query), "limit ") === false) ? "$query limit 0,$query_limit" : $query;
 	// Execute query
 	$foreign_key_array = array();
-	$found_rows = 0;
 	$mtime = explode(" ", microtime());
 	$starttime = $mtime[1] + $mtime[0]; 
 
@@ -144,9 +143,6 @@ if ($query != "")
 			// Check for errors
 			$query_error = db_error();
 			$query_errno = db_errno();
-			// Get total row count possible
-			$q2 = db_query("SELECT FOUND_ROWS() as found_rows");
-			$found_rows = ($q2 ? db_result($q2, 0) : 0);
 			
 			## FOREIGN KEYS
 			// Place all SQL into strings, segregating create table statements and foreign key statements
@@ -196,7 +192,6 @@ if ($query != "")
 			$q = db_query($query);
 			$mtime = explode(" ", microtime());
 			$endtime = $mtime[1] + $mtime[0]; 
-			$found_rows = db_num_rows($q);
 			// Check for errors
 			$query_error = db_error();
 			$query_errno = db_errno();
@@ -220,8 +215,8 @@ if ($query != "")
 		$num_cols = db_num_fields($q);
 		
 		$display_result .= "<p>
-								Returned <b>$num_rows</b> rows of <b>$found_rows</b>
-								&nbsp; <i>(executed in $total_execution_time seconds)</i>
+								Returned <b>$num_rows</b> rows
+								<i>(executed in $total_execution_time seconds)</i>
 							</p>";
 		
 		$display_result .= "<table class='dt2' style='font-family:Verdana;font-size:11px;'>

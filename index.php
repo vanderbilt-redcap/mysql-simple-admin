@@ -137,7 +137,7 @@ if ($query != "")
 		if ($module->isQueryType($query, 'select'))
 		{
 			// Find total rows that could be returned
-			$q = db_query("select SQL_CALC_FOUND_ROWS " . substr($query_executed, 7));
+			$q = db_query($query_executed);
 			$mtime = explode(" ", microtime());
 			$endtime = $mtime[1] + $mtime[0]; 
 			// Check for errors
